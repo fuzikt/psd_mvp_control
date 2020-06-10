@@ -38,12 +38,15 @@ control_demo.py
 
 ## Screenshots
 Main Application
+
 ![Alt text](/screenshots/main_window.png?raw=true "Main app")
 
 Add devices
-![Alt text](/screenshots/add_device.png?raw=true "Add devices")
+
+![Alt text](/screenshots/add_device_window.png?raw=true "Add devices")
 
 Add program steps
+
 ![Alt text](/screenshots/add_program_step.png?raw=true "Add program steps")
 
 # Supported devices
