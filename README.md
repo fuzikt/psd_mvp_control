@@ -69,3 +69,6 @@ hw_classes/psd_pump.py
 hw_classes/serial_com.py
 - class for COM serial communication
 - used by psd_pump.py and mvp_valve.py
+=======
+# psd_mvp_control
+Hamilton PSD4/6 and MVP4 controller
