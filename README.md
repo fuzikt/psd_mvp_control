@@ -2,8 +2,7 @@
 Python application to control Hamilton PSD/4, PSD/6 pumps and MVP/4 valves.
 
 ## Features
-- easy to  integrate independent hw_classes for PSD pump and MVP valve
-- see control_demo.py for details of integration
+- easy to  integrate independent hardware classes for PSD pump and MVP valve (see control_demo.py for details of integration)
 - multiple addressable devices per COM port
 - Qt5 based GUI
 - loop support in gui built programs
@@ -14,7 +13,7 @@ Python application to control Hamilton PSD/4, PSD/6 pumps and MVP/4 valves.
 - PySerial
 
 ## Builts
-PyInstaller made builds with all dependencies are available for Windows and Linux systems.
+Builds with all dependencies are available for Windows and Linux systems. See the [releases](https://github.com/fuzikt/psd_mvp_control/releases/) page.
 
 ## Install from sources
 Make sure all dependencies are installed.
@@ -49,26 +48,26 @@ Add program steps
 
 ![Alt text](/screenshots/add_program_step.png?raw=true "Add program steps")
 
-# Supported devices
-- PSD/4 - STD, SF, HLF, HVT, HLF/HVT (Standard, Smooth Flow, High-Lift Force, HiValve Torque, High-Lift Force / HiValve Torque)
-- PSD/6 - STD, SF, HLF, HVT, HLF/HVT (Standard, Smooth Flow, High-Lift Force, HiValve Torque, High-Lift Force / HiValve Torque)
+## Supported devices
+- PSD/4 - STD, SF, HLF, HVT, HLF/HVT (Standard, Smooth Flow, High-Lift Force, High Valve Torque, High-Lift Force / High Valve Torque)
+- PSD/6 - STD, SF, HLF, HVT, HLF/HVT (Standard, Smooth Flow, High-Lift Force, High Valve Torque, High-Lift Force / High Valve Torque)
 - MVP/4
 
 ## Files description
-main_app.py
+*main_app.py*
 - main GUI program to control the devices.
 
-control_demo.py
+*control_demo.py*
 - demo script to control devices without GUI.
 
-hw_classes/mvp_valve.py
+*hw_classes/mvp_valve.py*
 - class to control MVP valves through serial communication.
 - usage shown in control_demo.py
 
-hw_classes/psd_pump.py
+*hw_classes/psd_pump.py*
 - class to control PSD/4, PSD/8 pumps through serial communication
 - usage shown in control_demo.py
 
-hw_classes/serial_com.py
+*hw_classes/serial_com.py*
 - class for COM serial communication
 - used by psd_pump.py and mvp_valve.py
