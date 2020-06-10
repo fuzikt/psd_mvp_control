@@ -23,8 +23,8 @@ Alternatively, create a conda environment with the dependencies.
 
 Download the sources from Github.
 ```
-git clone 
-cd 
+git clone https://github.com/fuzikt/psd_mvp_control.git
+cd psd_mvp_control
 ```
 To run the GUI use:
 ```
@@ -38,18 +38,18 @@ control_demo.py
 
 ## Screenshots
 Main Application
-![Alt text](/screenshots/main.png?raw=true "Main app")
+![Alt text](/screenshots/main_window.png?raw=true "Main app")
+
 Add devices
-![Alt text](/screenshots/main.png?raw=true "Add devices")
-Add program steps 1
-![Alt text](/screenshots/main.png?raw=true "Add program steps 1")
-Add program steps 2
-![Alt text](/screenshots/main.png?raw=true "Add program steps 2")
+![Alt text](/screenshots/add_device.png?raw=true "Add devices")
+
+Add program steps
+![Alt text](/screenshots/add_program_step.png?raw=true "Add program steps")
 
 # Supported devices
-PSD/4 - STD, SF, HLF, HVT, HLF/HVT (Standard, Smooth Flow, High-Lift Force, HiValve Torque, High-Lift Force / HiValve Torque)
-PSD/6 - STD, SF, HLF, HVT, HLF/HVT (Standard, Smooth Flow, High-Lift Force, HiValve Torque, High-Lift Force / HiValve Torque)
-MVP/4
+- PSD/4 - STD, SF, HLF, HVT, HLF/HVT (Standard, Smooth Flow, High-Lift Force, HiValve Torque, High-Lift Force / HiValve Torque)
+- PSD/6 - STD, SF, HLF, HVT, HLF/HVT (Standard, Smooth Flow, High-Lift Force, HiValve Torque, High-Lift Force / HiValve Torque)
+- MVP/4
 
 ## Files description
 main_app.py
@@ -69,6 +69,3 @@ hw_classes/psd_pump.py
 hw_classes/serial_com.py
 - class for COM serial communication
 - used by psd_pump.py and mvp_valve.py
-=======
-# psd_mvp_control
-Hamilton PSD4/6 and MVP4 controller
