@@ -12,7 +12,7 @@ Python application to control Hamilton PSD/4, PSD/6 pumps and MVP/4 valves.
 - PyQt5
 - PySerial
 
-## Builts
+## Builds
 Builds with all dependencies are available for Windows and Linux systems. See the [releases](https://github.com/fuzikt/psd_mvp_control/releases/) page.
 
 ## Install from sources

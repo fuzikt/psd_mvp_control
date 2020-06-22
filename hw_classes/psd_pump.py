@@ -394,7 +394,7 @@ class PSDpump:
 
     def empty_syringe(self, start_velocity=-1, stop_velocity=-1, max_velocity=-1, acceleration=-1):
         # empty the syringe to output port (default max settings)
-        self.valve_input()
+        self.valve_output()
         self.set_start_velocity(start_velocity) if start_velocity != -1 else self.set_start_velocity(
             self.start_velocity_max)
         self.set_stop_velocity(stop_velocity) if stop_velocity != -1 else self.set_stop_velocity(self.stop_velocity_max)
@@ -404,7 +404,7 @@ class PSDpump:
 
     def fill_syringe(self, start_velocity=-1, stop_velocity=-1, max_velocity=-1, acceleration=-1):
         # fills the syringe from input port (default max settings)
-        self.valve_output()
+        self.valve_input()
         self.set_start_velocity(start_velocity) if start_velocity != -1 else self.set_start_velocity(
             self.start_velocity_max)
         self.set_stop_velocity(stop_velocity) if stop_velocity != -1 else self.set_stop_velocity(self.stop_velocity_max)
