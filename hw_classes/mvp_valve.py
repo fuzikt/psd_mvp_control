@@ -70,7 +70,7 @@ class MVPvalve:
 
     def run_command(self):
         self.command_buffer += "R"
-        self._send_command()
+        return self._send_command()
 
     def initialize(self, valve):
         if valve == "left":

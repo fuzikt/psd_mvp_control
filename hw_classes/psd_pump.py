@@ -243,7 +243,7 @@ class PSDpump:
 
     def run_command(self):
         self.command_buffer += "R"
-        self._send_command()
+        return self._send_command()
 
     def steps_to_volume(self, steps):
         volume = self.syringe_volume / self.steps_max * steps
