@@ -166,7 +166,7 @@ class DialogAddProgramStep(QtWidgets.QDialog, Ui_DialogAddProgramStep):
 
             if value == "insert_loop_start":
                 self.spinBoxSteps.setMinimum(1)
-                self.spinBoxSteps.setMaximum(100)
+                self.spinBoxSteps.setMaximum(1000)
                 self.spinBoxVolume.setEnabled(False)
 
             self.spinBoxSteps.setToolTip(str(self.spinBoxSteps.minimum()) + "-" + str(self.spinBoxSteps.maximum()))
