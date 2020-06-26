@@ -278,10 +278,10 @@ class PSDpump:
         self.command_buffer += "z"
         return "OK"
 
-    def move_up_steps(self, steps):
+    def move_down_steps(self, steps):
         self._general_steps_command("P", steps, self.steps_min, self.steps_max)
 
-    def move_down_steps(self, steps):
+    def move_up_steps(self, steps):
         self._general_steps_command("D", steps, self.steps_min, self.steps_max)
 
     def set_return_steps(self, steps):
