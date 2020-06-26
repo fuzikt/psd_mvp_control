@@ -412,7 +412,7 @@ class PSDpump:
         self.set_acceleration(acceleration) if acceleration != -1 else self.set_acceleration(self.acceleration_max)
         self.set_step_position(self.steps_max)
 
-    def move_syringe_down(self, valve_port, steps, start_velocity=-1, stop_velocity=-1, max_velocity=-1,
+    def move_syringe_up(self, valve_port, steps, start_velocity=-1, stop_velocity=-1, max_velocity=-1,
                           acceleration=-1):
         self.valve_input(valve_port)
         self.set_start_velocity(start_velocity) if start_velocity != -1 else self.set_start_velocity(
@@ -422,7 +422,7 @@ class PSDpump:
         self.set_acceleration(acceleration) if acceleration != -1 else self.set_acceleration(self.acceleration_max)
         self.move_up_steps(steps)
 
-    def move_syringe_up(self, valve_port, steps, start_velocity=-1, stop_velocity=-1, max_velocity=-1, acceleration=-1):
+    def move_syringe_down(self, valve_port, steps, start_velocity=-1, stop_velocity=-1, max_velocity=-1, acceleration=-1):
         self.valve_input(valve_port)
         self.set_start_velocity(start_velocity) if start_velocity != -1 else self.set_start_velocity(
             self.start_velocity_max)
