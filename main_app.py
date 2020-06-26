@@ -91,6 +91,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def clickButtonRunSingleCommand(self):
         if self.tableProgram.currentRow() == -1:
             return
+        # start and end loop are non-runnable steps
+        if self.programSteps[self.tableProgram.currentRow()][1] == "insert_loop_start" or  self.programSteps[self.tableProgram.currentRow()][1] == "insert_loop_end":
+            return
         self.labelInfo.setText("Busy...")
         self.disableButtons()
         self.deviceInCharge = self.programSteps[self.tableProgram.currentRow()][0]
