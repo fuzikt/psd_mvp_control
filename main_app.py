@@ -30,6 +30,7 @@ from PyQt5.QtWidgets import QMessageBox
 from gui.main_window import Ui_MainWindow
 from add_devices_dialog import DialogAddDevice
 from add_program_step_dialog import DialogAddProgramStep
+from com_log_dialog import DialogComLog
 
 from hw_classes.psd_pump import PSDpump
 from hw_classes.mvp_valve import MVPvalve
@@ -51,6 +52,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.buttonDeviceRemove.clicked.connect(self.clickButtonDevicesRemove)
         self.buttonSave.clicked.connect(self.clickButtonSave)
         self.buttonOpen.clicked.connect(self.clickButtonOpen)
+        self.buttonComLog.clicked.connect(self.clickButtonCOMLog)
 
         # tableDevices setup
         self.tableDevices.setColumnCount(5)
@@ -81,12 +83,20 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.loopMaxRepeat = 0
         self.loopCurrentRepeat = 0
 
+
         # timers for background processing with their timeout events
         self.getStateTimer = QtCore.QTimer()
         self.getStateTimer.timeout.connect(self.getStateTimerTimeOut)
 
         self.runTimer = QtCore.QTimer()
         self.runTimer.timeout.connect(self.runTimerTimeOut)
+
+        self.DialogComWindow = DialogComLog()
+        self.debug_communication = self.DialogComWindow.isVisible
+
+    def clickButtonCOMLog(self):
+        self.DialogComWindow.show()
+        self.DialogComWindow.comunicationLogList.addItem(QtWidgets.QListWidgetItem("asdf"))
 
     def clickButtonRunSingleCommand(self):
         if self.tableProgram.currentRow() == -1:
@@ -185,10 +195,24 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def runSingleCommand(self, device, command, params):
         method_to_call = getattr(self.deviceList[device], command)
         result = method_to_call(*params)
-        self.deviceList[device].run_command()
+
+        if self.debug_communication():
+            self.DialogComWindow.comunicationLogList.addItem(QtWidgets.QListWidgetItem("DEV%s COMMAND: %sR" % (device+1, self.deviceList[device].command_buffer)))
+
+        response = self.deviceList[device].run_command()
+
+        if self.debug_communication():
+            self.DialogComWindow.comunicationLogList.addItem(QtWidgets.QListWidgetItem("DEV%s RESPONSE: %s" % (device+1, str(response))))
 
     def queryDeviceForReadiness(self, device):
+        if self.debug_communication():
+            self.DialogComWindow.comunicationLogList.addItem(QtWidgets.QListWidgetItem("DEV%s COMMAND: Q" % device+1))
+
         readiness = self.deviceList[device].get_status()
+
+        if self.debug_communication():
+            self.DialogComWindow.comunicationLogList.addItem(QtWidgets.QListWidgetItem(("DEV%s RESPONSE: %s" % (device+1, str(readiness)))))
+
         if readiness[1]:
             return True
         else:
@@ -379,6 +403,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def clickButtonProgramStepRemove(self):
         stepToRemove = self.tableProgram.currentRow()
+
+        if stepToRemove == -1:
+            QtWidgets.QMessageBox.critical(self, 'Error', "Please, select a program step form the list.", QMessageBox.Ok)
+            return
+
         self.tableProgram.removeRow(stepToRemove)
         self.programSteps.pop(stepToRemove)
         if len(self.programSteps) < 1:
@@ -554,6 +583,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def clickButtonDevicesRemove(self):
         deviceToRemove = self.tableDevices.currentRow()
+        if deviceToRemove == -1:
+            QtWidgets.QMessageBox.critical(self, 'Error', "Please, select a device form the list.", QMessageBox.Ok)
+            return
 
         for step in self.programSteps:
             if step[0] == deviceToRemove:

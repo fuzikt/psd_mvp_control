@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'main_window.ui'
 #
-# Created by: PyQt5 UI code generator 5.14.1
+# Created by: PyQt5 UI code generator 5.14.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -22,18 +22,30 @@ class Ui_MainWindow(object):
         self.groupBoxDevices.setObjectName("groupBoxDevices")
         self.gridLayout = QtWidgets.QGridLayout(self.groupBoxDevices)
         self.gridLayout.setObjectName("gridLayout")
-        self.buttonDeviceRemove = QtWidgets.QPushButton(self.groupBoxDevices)
-        self.buttonDeviceRemove.setEnabled(False)
-        self.buttonDeviceRemove.setObjectName("buttonDeviceRemove")
-        self.gridLayout.addWidget(self.buttonDeviceRemove, 1, 2, 1, 1)
-        self.buttonDeviceAdd = QtWidgets.QPushButton(self.groupBoxDevices)
-        self.buttonDeviceAdd.setObjectName("buttonDeviceAdd")
-        self.gridLayout.addWidget(self.buttonDeviceAdd, 0, 2, 1, 1)
+        self.buttonComLog = QtWidgets.QPushButton(self.groupBoxDevices)
+        self.buttonComLog.setObjectName("buttonComLog")
+        self.gridLayout.addWidget(self.buttonComLog, 3, 2, 1, 1)
         self.tableDevices = QtWidgets.QTableWidget(self.groupBoxDevices)
         self.tableDevices.setObjectName("tableDevices")
         self.tableDevices.setColumnCount(0)
         self.tableDevices.setRowCount(0)
-        self.gridLayout.addWidget(self.tableDevices, 0, 1, 3, 1)
+        self.gridLayout.addWidget(self.tableDevices, 0, 1, 5, 1)
+        self.buttonDeviceAdd = QtWidgets.QPushButton(self.groupBoxDevices)
+        self.buttonDeviceAdd.setObjectName("buttonDeviceAdd")
+        self.gridLayout.addWidget(self.buttonDeviceAdd, 0, 2, 1, 1)
+        self.buttonDeviceRemove = QtWidgets.QPushButton(self.groupBoxDevices)
+        self.buttonDeviceRemove.setEnabled(False)
+        self.buttonDeviceRemove.setObjectName("buttonDeviceRemove")
+        self.gridLayout.addWidget(self.buttonDeviceRemove, 1, 2, 1, 1)
+        self.labelSpacer3 = QtWidgets.QLabel(self.groupBoxDevices)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.labelSpacer3.sizePolicy().hasHeightForWidth())
+        self.labelSpacer3.setSizePolicy(sizePolicy)
+        self.labelSpacer3.setText("")
+        self.labelSpacer3.setObjectName("labelSpacer3")
+        self.gridLayout.addWidget(self.labelSpacer3, 2, 2, 1, 1)
         self.gridLayout_3.addWidget(self.groupBoxDevices, 0, 0, 1, 1)
         self.groupBoxProgram = QtWidgets.QGroupBox(self.centralwidget)
         self.groupBoxProgram.setObjectName("groupBoxProgram")
@@ -173,8 +185,9 @@ class Ui_MainWindow(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "PSD / MVP controller"))
         self.groupBoxDevices.setTitle(_translate("MainWindow", "Devices"))
-        self.buttonDeviceRemove.setText(_translate("MainWindow", "Remove"))
+        self.buttonComLog.setText(_translate("MainWindow", "COM log"))
         self.buttonDeviceAdd.setText(_translate("MainWindow", "Add..."))
+        self.buttonDeviceRemove.setText(_translate("MainWindow", "Remove"))
         self.groupBoxProgram.setTitle(_translate("MainWindow", "Program"))
         self.buttonStop.setText(_translate("MainWindow", "Stop"))
         self.buttonOpen.setText(_translate("MainWindow", "Open program..."))
