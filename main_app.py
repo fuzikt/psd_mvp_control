@@ -45,6 +45,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # EVENTS
         self.buttonDeviceAdd.clicked.connect(self.clickButtonDeviceAdd)
         self.buttonProgramStepAdd.clicked.connect(self.clickButtonAddProgramStep)
+        self.buttonProgramStepEdit.clicked.connect(self.clickButtonEditProgramStep)
         self.buttonRunSingleCommand.clicked.connect(self.clickButtonRunSingleCommand)
         self.buttonRun.clicked.connect(self.clickButtonRun)
         self.buttonStop.clicked.connect(self.clickButtonStop)
@@ -96,7 +97,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def clickButtonCOMLog(self):
         self.DialogComWindow.show()
-        self.DialogComWindow.comunicationLogList.addItem(QtWidgets.QListWidgetItem("asdf"))
 
     def clickButtonRunSingleCommand(self):
         if self.tableProgram.currentRow() == -1:
@@ -126,14 +126,16 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.loopMaxRepeat = self.programSteps[self.currentProgramStepExecuted][2]
             self.loopCurrentRepeat = 1
             self.labelRepeatStatus.setText(str(self.loopCurrentRepeat) + "/" + str(self.loopMaxRepeat))
-        else:
-            self.tableProgram.setCurrentCell(self.currentProgramStepExecuted, 0)
-            self.labelInfo.setText("Busy...")
-            self.disableButtons()
-            self.deviceInCharge = self.programSteps[self.currentProgramStepExecuted][0]
-            self.runSingleCommand(self.programSteps[self.currentProgramStepExecuted][0],
-                                  self.programSteps[self.currentProgramStepExecuted][1],
-                                  self.programSteps[self.currentProgramStepExecuted][2])
+            self.currentProgramStepExecuted += 1
+
+        self.tableProgram.setCurrentCell(self.currentProgramStepExecuted, 0)
+        self.labelInfo.setText("Busy...")
+        self.disableButtons()
+        self.deviceInCharge = self.programSteps[self.currentProgramStepExecuted][0]
+        self.runSingleCommand(self.programSteps[self.currentProgramStepExecuted][0],
+                              self.programSteps[self.currentProgramStepExecuted][1],
+                              self.programSteps[self.currentProgramStepExecuted][2])
+
         self.runTimer.start(100)
 
     def runTimerTimeOut(self):
@@ -242,70 +244,94 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # DISABLE STOP BUTTON
         self.buttonStop.setEnabled(False)
 
+    def addEditProgramStep(self, addEditDialog, Editing):
+
+        programCommand = addEditDialog.comboBoxBasicCommands.currentText() + addEditDialog.comboBoxComplexCommands.currentText()
+        deviceID = addEditDialog.comboBoxDevice.currentIndex()
+        commandParameters = []
+
+        if programCommand == "":
+            return
+
+        if programCommand == "initialize":
+            if addEditDialog.radioButtonOutputRight.isChecked():
+                commandParameters.append("right")
+            else:
+                commandParameters.append("left")
+
+        elif programCommand in ["set_step_position", "move_up_steps", "move_down_steps", "set_return_steps",
+                                "set_backoff_steps"]:
+            commandParameters.append(addEditDialog.spinBoxSteps.value())
+
+        elif programCommand in ["valve_input", "valve_output"]:
+            commandParameters.append(addEditDialog.spinBoxValvePort.value())
+
+        elif programCommand in ["valve_bypass", "valve_extra", "halt", "setHiRes", "setLoRes", "insert_loop_end"]:
+            pass
+
+        elif programCommand in ["insert_loop_start"]:
+            commandParameters.append(addEditDialog.spinBoxSteps.value())
+
+        elif programCommand == "set_acceleration":
+            commandParameters.append(addEditDialog.spinBoxAcceleration.value())
+
+        elif programCommand == "set_start_velocity":
+            commandParameters.append(addEditDialog.spinBoxStartVelocity.value())
+
+        elif programCommand == "set_stop_velocity":
+            commandParameters.append(addEditDialog.spinBoxStopVelocity.value())
+
+        elif programCommand == "set_max_velocity":
+            commandParameters.append(addEditDialog.spinBoxSpeedSteps.value())
+
+        elif programCommand == "set_syringe_speed":
+            commandParameters.append(addEditDialog.spinBoxSpeedSyringe.value())
+
+        elif programCommand in ["empty_syringe", "fill_syringe"]:
+            commandParameters.append(addEditDialog.spinBoxStartVelocity.value())
+            commandParameters.append(addEditDialog.spinBoxStopVelocity.value())
+            commandParameters.append(addEditDialog.spinBoxSpeedSteps.value())
+            commandParameters.append(addEditDialog.spinBoxAcceleration.value())
+
+        elif programCommand in ["move_syringe_up", "move_syringe_down"]:
+            commandParameters.append(addEditDialog.spinBoxValvePort.value())
+            commandParameters.append(addEditDialog.spinBoxSteps.value())
+            commandParameters.append(addEditDialog.spinBoxStartVelocity.value())
+            commandParameters.append(addEditDialog.spinBoxStopVelocity.value())
+            commandParameters.append(addEditDialog.spinBoxSpeedSteps.value())
+            commandParameters.append(addEditDialog.spinBoxAcceleration.value())
+
+        if Editing == True:
+            self.programSteps[self.tableProgram.currentRow()] = [deviceID, programCommand, commandParameters]
+            self.programTableInsertEditRow(self.tableProgram.currentRow(), Editing=True)
+        else:
+            self.programSteps.append([deviceID, programCommand, commandParameters])
+            self.programTableInsertEditRow(len(self.programSteps) - 1)
+
     def clickButtonAddProgramStep(self):
         d1 = DialogAddProgramStep(self, DeviceList=self.deviceList)
         d1.show()
         result = d1.exec()
         if result:
-            programCommand = d1.comboBoxBasicCommands.currentText() + d1.comboBoxComplexCommands.currentText()
-            deviceID = d1.comboBoxDevice.currentIndex()
-            commandParameters = []
+            self.addEditProgramStep(d1,False)
 
-            if programCommand == "":
-                return
+    def clickButtonEditProgramStep(self):
 
-            if programCommand == "initialize":
-                if d1.radioButtonOutputRight.isChecked():
-                    commandParameters.append("right")
-                else:
-                    commandParameters.append("left")
+        stepToEdit = self.tableProgram.currentRow()
+        if stepToEdit == -1:
+            QtWidgets.QMessageBox.critical(self, 'Error', "Please, select a program step form the list.",
+                                           QMessageBox.Ok)
+            return
 
-            elif programCommand in ["set_step_position", "move_up_steps", "move_down_steps", "set_return_steps",
-                                    "set_backoff_steps"]:
-                commandParameters.append(d1.spinBoxSteps.value())
+        programStepToEdit = self.programSteps[stepToEdit]
 
-            elif programCommand in ["valve_input", "valve_output"]:
-                commandParameters.append(d1.spinBoxValvePort.value())
+        d1 = DialogAddProgramStep(self, DeviceList=self.deviceList, Editing=True, ProgramStepToEdit=programStepToEdit)
+        d1.show()
+        result = d1.exec()
+        if result:
+            self.addEditProgramStep(d1,True)
 
-            elif programCommand in ["valve_bypass", "valve_extra", "halt", "setHiRes", "setLoRes", "insert_loop_end"]:
-                pass
-
-            elif programCommand in ["insert_loop_start"]:
-                commandParameters.append(d1.spinBoxSteps.value())
-
-            elif programCommand == "set_acceleration":
-                commandParameters.append(d1.spinBoxAcceleration.value())
-
-            elif programCommand == "set_start_velocity":
-                commandParameters.append(d1.spinBoxStartVelocity.value())
-
-            elif programCommand == "set_stop_velocity":
-                commandParameters.append(d1.spinBoxStopVelocity.value())
-
-            elif programCommand == "set_max_velocity":
-                commandParameters.append(d1.spinBoxSpeedSteps.value())
-
-            elif programCommand == "set_syringe_speed":
-                commandParameters.append(d1.spinBoxSpeedSyringe.value())
-
-            elif programCommand in ["empty_syringe", "fill_syringe"]:
-                commandParameters.append(d1.spinBoxStartVelocity.value())
-                commandParameters.append(d1.spinBoxStopVelocity.value())
-                commandParameters.append(d1.spinBoxSpeedSteps.value())
-                commandParameters.append(d1.spinBoxAcceleration.value())
-
-            elif programCommand in ["move_syringe_up", "move_syringe_down"]:
-                commandParameters.append(d1.spinBoxValvePort.value())
-                commandParameters.append(d1.spinBoxSteps.value())
-                commandParameters.append(d1.spinBoxStartVelocity.value())
-                commandParameters.append(d1.spinBoxStopVelocity.value())
-                commandParameters.append(d1.spinBoxSpeedSteps.value())
-                commandParameters.append(d1.spinBoxAcceleration.value())
-
-            self.programSteps.append([deviceID, programCommand, commandParameters])
-            self.programTableInsertRow(len(self.programSteps) - 1)
-
-    def programTableInsertRow(self, programListIndex):
+    def programTableInsertEditRow(self, programListIndex, Editing=False):
 
         programCommand = self.programSteps[programListIndex][1]
         tableCommandParameters = []
@@ -373,8 +399,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             tableCommandParameters.append("Start velocity: %s" % self.programSteps[programListIndex][2][2])
             tableCommandParameters.append("Stop velocity: %s" % self.programSteps[programListIndex][2][3])
 
-        # insert row into program table (device ID + device Name; Command; command parameters)
-        rowPosition = self.tableProgram.rowCount()
+        # insert/edit row in program table (device ID + device Name; Command; command parameters)
+        if Editing == True:
+            self.tableProgram.removeRow(programListIndex)
+            rowPosition = programListIndex
+        else:
+            rowPosition = self.tableProgram.rowCount()
+
         self.tableProgram.insertRow(rowPosition)
         rowItem = QtWidgets.QTableWidgetItem(str(self.programSteps[programListIndex][0] + 1) + " - " + self.deviceList[
             self.programSteps[programListIndex][0]].hw_type)
@@ -504,12 +535,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     deviceID = int(program_step.pop(0))
                     programCommand = program_step.pop(0)
                     for command_param in program_step:
-                        if command_param.isdigit():
+                        if command_param.isdigit() or command_param == "-1":
                             commandParameters.append(int(command_param))
                         else:
                             commandParameters.append(command_param)
                     self.programSteps.append([deviceID, programCommand, commandParameters])
-                    self.programTableInsertRow(len(self.programSteps) - 1)
+                    self.programTableInsertEditRow(len(self.programSteps) - 1)
 
                 line = program_file.readline().strip("\n")
                 if not line:

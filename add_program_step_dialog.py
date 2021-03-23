@@ -23,10 +23,12 @@ from gui.add_program_step import Ui_DialogAddProgramStep
 
 
 class DialogAddProgramStep(QtWidgets.QDialog, Ui_DialogAddProgramStep):
-    def __init__(self, parent=None, DeviceList=None):
+    def __init__(self, parent=None, DeviceList=None, Editing=False, ProgramStepToEdit=[]):
         QtWidgets.QDialog.__init__(self, parent)
         self.setupUi(self)
         self.Devicelist = DeviceList
+        self.Editing = Editing
+        self.ProgramStepToEdit = ProgramStepToEdit
 
         #EVENTS handling
         self.comboBoxDevice.currentTextChanged.connect(self.comboBoxDeviceChanged)
@@ -413,4 +415,92 @@ class DialogAddProgramStep(QtWidgets.QDialog, Ui_DialogAddProgramStep):
         self.comboBoxComplexCommands.clear()
 
         self.textEditDescription.clear()
+
+        if self.Editing == True:
+            #fill the fields with the parameters from the program step
+            self.comboBoxDevice.setCurrentIndex(self.ProgramStepToEdit[0])
+
+            programCommand = self.ProgramStepToEdit[1]
+            commandParameters = self.ProgramStepToEdit[2]
+
+            def updateBasicCommandCombo(programCommand):
+                index = self.comboBoxBasicCommands.findText(programCommand)
+                if index >= 0:
+                    self.comboBoxBasicCommands.setCurrentIndex(index)
+                self.comboBoxBasicCommandsChanged(programCommand)
+                self.comboBoxComplexCommands.setCurrentIndex(-1)
+
+            def updateComplexCommandCombo(programCommand):
+                index = self.comboBoxComplexCommands.findText(programCommand)
+                if index >= 0:
+                    self.comboBoxComplexCommands.setCurrentIndex(index)
+                self.comboBoxComplexChanged(programCommand)
+                self.comboBoxBasicCommands.setCurrentIndex(-1)
+
+            if programCommand == "initialize":
+                    updateBasicCommandCombo(programCommand)
+                    if commandParameters[0] == "right":
+                        self.radioButtonOutputRight.isChecked = True
+                        self.radioButtonOutputLeft.isChecked = False
+                    else:
+                        self.radioButtonOutputRight.isChecked = False
+                        self.radioButtonOutputLeft.isChecked = True
+
+            elif programCommand in ["set_step_position", "move_up_steps", "move_down_steps", "set_return_steps",
+                                    "set_backoff_steps"]:
+                updateBasicCommandCombo(programCommand)
+                self.spinBoxSteps.setValue(commandParameters[0])
+                self.spinBoxVolume.setValue(self.Devicelist[self.ProgramStepToEdit[0]].steps_to_volume(commandParameters[0]))
+
+            elif programCommand in ["valve_input", "valve_output"]:
+                updateBasicCommandCombo(programCommand)
+                self.spinBoxValvePort.setValue(commandParameters[0])
+
+            elif programCommand in ["valve_bypass", "valve_extra", "halt", "setHiRes", "setLoRes", "insert_loop_end"]:
+                updateBasicCommandCombo(programCommand)
+
+            elif programCommand in ["insert_loop_start"]:
+                updateBasicCommandCombo(programCommand)
+                self.spinBoxSteps.setValue(commandParameters[0])
+
+            elif programCommand == "set_acceleration":
+                updateBasicCommandCombo(programCommand)
+                self.spinBoxAcceleration.setValue(commandParameters[0])
+
+            elif programCommand == "set_start_velocity":
+                updateBasicCommandCombo(programCommand)
+                self.spinBoxStartVelocity.setValue(commandParameters[0])
+
+            elif programCommand == "set_stop_velocity":
+                updateBasicCommandCombo(programCommand)
+                self.spinBoxStopVelocity.setValue(commandParameters[0])
+
+            elif programCommand == "set_max_velocity":
+                updateBasicCommandCombo(programCommand)
+                self.spinBoxSpeedSteps.setValue(commandParameters[0])
+                self.spinBoxSpeedVolume.setValue(self.Devicelist[self.ProgramStepToEdit[0]].steps_to_volume(commandParameters[0]))
+
+            elif programCommand == "set_syringe_speed":
+                updateBasicCommandCombo(programCommand)
+                self.spinBoxSpeedSyringe.setValue(commandParameters[0])
+
+            elif programCommand in ["empty_syringe", "fill_syringe"]:
+                updateComplexCommandCombo(programCommand)
+                self.spinBoxStartVelocity.setValue(commandParameters[0])
+                self.spinBoxStopVelocity.setValue(commandParameters[1])
+                self.spinBoxSpeedSteps.setValue(commandParameters[2])
+                self.spinBoxAcceleration.setValue(commandParameters[3])
+                self.spinBoxSpeedVolume.setValue(self.Devicelist[self.ProgramStepToEdit[0]].steps_to_volume(commandParameters[2]))
+
+            elif programCommand in ["move_syringe_up", "move_syringe_down"]:
+                updateComplexCommandCombo(programCommand)
+                self.spinBoxValvePort.setValue(commandParameters[0])
+                self.spinBoxSteps.setValue(commandParameters[1])
+                self.spinBoxStartVelocity.setValue(commandParameters[2])
+                self.spinBoxStopVelocity.setValue(commandParameters[3])
+                self.spinBoxSpeedSteps.setValue(commandParameters[4])
+                self.spinBoxAcceleration.setValue(commandParameters[5])
+                self.spinBoxVolume.setValue(self.Devicelist[self.ProgramStepToEdit[0]].steps_to_volume(commandParameters[1]))
+                self.spinBoxSpeedVolume.setValue(self.Devicelist[self.ProgramStepToEdit[0]].steps_to_volume(commandParameters[4]))
+
         event.accept()
