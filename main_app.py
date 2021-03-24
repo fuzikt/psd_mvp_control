@@ -229,7 +229,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.buttonRunSingleCommand.setEnabled(False)
         self.buttonDeviceAdd.setEnabled(False)
         self.buttonDeviceRemove.setEnabled(False)
-        self.buttonProgramStepAdd.setEnabled(False)
+        self.buttonProgramStepInsert.setEnabled(False)
         self.buttonProgramStepRemove.setEnabled(False)
         self.tableProgram.setEnabled(False)
         self.tableDevices.setEnabled(False)
@@ -241,7 +241,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.buttonRunSingleCommand.setEnabled(True)
         self.buttonDeviceAdd.setEnabled(True)
         self.buttonDeviceRemove.setEnabled(True)
-        self.buttonProgramStepAdd.setEnabled(True)
+        self.buttonProgramStepInsert.setEnabled(True)
         self.buttonProgramStepRemove.setEnabled(True)
         self.tableProgram.setEnabled(True)
         self.tableDevices.setEnabled(True)
@@ -433,6 +433,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         if len(self.programSteps) >= 1:
             self.buttonProgramStepRemove.setEnabled(True)
+            self.buttonProgramStepEdit.setEnabled(True)
             self.buttonRun.setEnabled(True)
             self.buttonRunSingleCommand.setEnabled(True)
             self.buttonSave.setEnabled(True)
@@ -449,6 +450,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.programSteps.pop(stepToRemove)
         if len(self.programSteps) < 1:
             self.buttonProgramStepRemove.setEnabled(False)
+            self.buttonProgramStepEdit.setEnabled(False)
             self.buttonRun.setEnabled(False)
             self.buttonRunSingleCommand.setEnabled(False)
             self.buttonSave.setEnabled(False)
