@@ -37,6 +37,7 @@ from hw_classes.mvp_valve import MVPvalve
 
 import serial.tools.list_ports
 
+
 class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, *args, obj=None, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)
@@ -44,7 +45,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # EVENTS
         self.buttonDeviceAdd.clicked.connect(self.clickButtonDeviceAdd)
-        self.buttonProgramStepAdd.clicked.connect(self.clickButtonAddProgramStep)
+        self.buttonProgramStepInsert.clicked.connect(self.clickButtonInsertProgramStep)
         self.buttonProgramStepEdit.clicked.connect(self.clickButtonEditProgramStep)
         self.buttonRunSingleCommand.clicked.connect(self.clickButtonRunSingleCommand)
         self.buttonRun.clicked.connect(self.clickButtonRun)
@@ -74,16 +75,15 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.tableProgram.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
 
         # object local variables
-        self.deviceList = [] # defined as [device_type, hw_address, com_port, hi_res, syringe_type]
+        self.deviceList = []  # defined as [device_type, hw_address, com_port, hi_res, syringe_type]
         self.programSteps = []  # defined as [device_id, command, [param1, param2]]
-        self.deviceInCharge = 0 # device from deviceList actually running a command
-        self.devicesReady = True # readiness of the last device that run a command
+        self.deviceInCharge = 0  # device from deviceList actually running a command
+        self.devicesReady = True  # readiness of the last device that run a command
         self.currentProgramStepExecuted = 0
-        self.terminateProgram = False # whether Stop button was pressed
+        self.terminateProgram = False  # whether Stop button was pressed
         self.loopStartStep = 0
         self.loopMaxRepeat = 0
         self.loopCurrentRepeat = 0
-
 
         # timers for background processing with their timeout events
         self.getStateTimer = QtCore.QTimer()
@@ -102,7 +102,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if self.tableProgram.currentRow() == -1:
             return
         # start and end loop are non-runnable steps
-        if self.programSteps[self.tableProgram.currentRow()][1] == "insert_loop_start" or  self.programSteps[self.tableProgram.currentRow()][1] == "insert_loop_end":
+        if self.programSteps[self.tableProgram.currentRow()][1] == "insert_loop_start" or \
+                self.programSteps[self.tableProgram.currentRow()][1] == "insert_loop_end":
             return
         self.labelInfo.setText("Busy...")
         self.disableButtons()
@@ -199,21 +200,24 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         result = method_to_call(*params)
 
         if self.debug_communication():
-            self.DialogComWindow.comunicationLogList.addItem(QtWidgets.QListWidgetItem("DEV%s COMMAND: %sR" % (device+1, self.deviceList[device].command_buffer)))
+            self.DialogComWindow.comunicationLogList.addItem(
+                QtWidgets.QListWidgetItem("DEV%s COMMAND: %sR" % (device + 1, self.deviceList[device].command_buffer)))
 
         response = self.deviceList[device].run_command()
 
         if self.debug_communication():
-            self.DialogComWindow.comunicationLogList.addItem(QtWidgets.QListWidgetItem("DEV%s RESPONSE: %s" % (device+1, str(response))))
+            self.DialogComWindow.comunicationLogList.addItem(
+                QtWidgets.QListWidgetItem("DEV%s RESPONSE: %s" % (device + 1, str(response))))
 
     def queryDeviceForReadiness(self, device):
         if self.debug_communication():
-            self.DialogComWindow.comunicationLogList.addItem(QtWidgets.QListWidgetItem("DEV%s COMMAND: Q" % device+1))
+            self.DialogComWindow.comunicationLogList.addItem(QtWidgets.QListWidgetItem("DEV%s COMMAND: Q" % device + 1))
 
         readiness = self.deviceList[device].get_status()
 
         if self.debug_communication():
-            self.DialogComWindow.comunicationLogList.addItem(QtWidgets.QListWidgetItem(("DEV%s RESPONSE: %s" % (device+1, str(readiness)))))
+            self.DialogComWindow.comunicationLogList.addItem(
+                QtWidgets.QListWidgetItem(("DEV%s RESPONSE: %s" % (device + 1, str(readiness)))))
 
         if readiness[1]:
             return True
@@ -304,16 +308,18 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if Editing == True:
             self.programSteps[self.tableProgram.currentRow()] = [deviceID, programCommand, commandParameters]
             self.programTableInsertEditRow(self.tableProgram.currentRow(), Editing=True)
+            self.tableProgram.setCurrentCell(self.tableProgram.currentRow() + 1, 0)
         else:
-            self.programSteps.append([deviceID, programCommand, commandParameters])
-            self.programTableInsertEditRow(len(self.programSteps) - 1)
+            self.programSteps.insert(self.tableProgram.currentRow() + 1, [deviceID, programCommand, commandParameters])
+            self.programTableInsertEditRow(self.tableProgram.currentRow() + 1)
+            self.tableProgram.setCurrentCell(self.tableProgram.currentRow() + 1, 0)
 
-    def clickButtonAddProgramStep(self):
+    def clickButtonInsertProgramStep(self):
         d1 = DialogAddProgramStep(self, DeviceList=self.deviceList)
         d1.show()
         result = d1.exec()
         if result:
-            self.addEditProgramStep(d1,False)
+            self.addEditProgramStep(d1, False)
 
     def clickButtonEditProgramStep(self):
 
@@ -329,7 +335,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         d1.show()
         result = d1.exec()
         if result:
-            self.addEditProgramStep(d1,True)
+            self.addEditProgramStep(d1, True)
 
     def programTableInsertEditRow(self, programListIndex, Editing=False):
 
@@ -402,9 +408,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # insert/edit row in program table (device ID + device Name; Command; command parameters)
         if Editing == True:
             self.tableProgram.removeRow(programListIndex)
-            rowPosition = programListIndex
-        else:
-            rowPosition = self.tableProgram.rowCount()
+
+        rowPosition = programListIndex
 
         self.tableProgram.insertRow(rowPosition)
         rowItem = QtWidgets.QTableWidgetItem(str(self.programSteps[programListIndex][0] + 1) + " - " + self.deviceList[
@@ -436,7 +441,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         stepToRemove = self.tableProgram.currentRow()
 
         if stepToRemove == -1:
-            QtWidgets.QMessageBox.critical(self, 'Error', "Please, select a program step form the list.", QMessageBox.Ok)
+            QtWidgets.QMessageBox.critical(self, 'Error', "Please, select a program step form the list.",
+                                           QMessageBox.Ok)
             return
 
         self.tableProgram.removeRow(stepToRemove)
@@ -463,9 +469,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 for device in self.deviceList:
                     if type(device).__name__ == "PSDpump":
                         file_to_save.write("PSDpump, %s, %s, %s, %s, %s\n" % (
-                        device.hw_type, device.hw_address, device.com_port, device.hi_res, device.syringe_volume))
+                            device.hw_type, device.hw_address, device.com_port, device.hi_res, device.syringe_volume))
                     elif type(device).__name__ == "MVPvalve":
-                        file_to_save.write("MVPvalve, %s, %s, %s\n" % (device.hw_type, device.hw_address, device.com_port))
+                        file_to_save.write(
+                            "MVPvalve, %s, %s, %s\n" % (device.hw_type, device.hw_address, device.com_port))
                 file_to_save.write("[Program]\n")
                 for program_step in self.programSteps:
                     file_to_save.write("%s, %s" % (program_step[0], program_step[1]))
@@ -479,8 +486,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         if self.tableDevices.rowCount() > 0 or self.tableProgram.rowCount() > 0:
             reply = QMessageBox.question(self, 'Warning!', "Do you want to rewrite current device and program list?",
-                                               QMessageBox.Yes | QMessageBox.No,
-                                               QMessageBox.No)
+                                         QMessageBox.Yes | QMessageBox.No,
+                                         QMessageBox.No)
             if reply == QMessageBox.No:
                 return
 
@@ -512,7 +519,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                         device = line.split(", ")
                         if "PSD" in device[0] or "MVP" in device[0]:
                             deviceComPort = device[3]
-                            #check if comport is already in use by other device (if so nest them)
+                            # check if comport is already in use by other device (if so nest them)
                             for deviceFromList in self.deviceList:
                                 if deviceFromList.com_port == device[3]:
                                     deviceComPort = deviceFromList.com_interface
@@ -558,10 +565,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             result = d.exec()
 
         if result:
-            #check if com port already in use with other device, if yes nest the new device under it
+            # check if com port already in use with other device, if yes nest the new device under it
             for device in self.deviceList:
                 if device.com_port == d.comboBoxCOMport.currentText():
-                    #nest the device
+                    # nest the device
                     if "PSD" in d.comboBoxDevice.currentText():
                         self.deviceList.append(
                             PSDpump(d.comboBoxDevice.currentText() + d.comboBoxDeviceType.currentText(),
@@ -620,7 +627,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         for step in self.programSteps:
             if step[0] == deviceToRemove:
-                QtWidgets.QMessageBox.warning(self, 'Warning', "You cannot remove a device already in use in the program", QMessageBox.Ok)
+                QtWidgets.QMessageBox.warning(self, 'Warning',
+                                              "You cannot remove a device already in use in the program",
+                                              QMessageBox.Ok)
                 return
 
         self.tableDevices.removeRow(deviceToRemove)
