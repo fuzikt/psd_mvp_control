@@ -124,7 +124,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.currentProgramStepExecuted = 0
         if self.programSteps[self.currentProgramStepExecuted][1] == "insert_loop_start":
             self.loopStartStep = self.currentProgramStepExecuted
-            self.loopMaxRepeat = self.programSteps[self.currentProgramStepExecuted][2]
+            self.loopMaxRepeat = self.programSteps[self.currentProgramStepExecuted][2][0]
             self.loopCurrentRepeat = 1
             self.labelRepeatStatus.setText(str(self.loopCurrentRepeat) + "/" + str(self.loopMaxRepeat))
             self.currentProgramStepExecuted += 1
