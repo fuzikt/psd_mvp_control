@@ -232,6 +232,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.buttonProgramStepInsert.setEnabled(False)
         self.buttonProgramStepEdit.setEnabled(False)
         self.buttonProgramStepRemove.setEnabled(False)
+        self.buttonSave.setEnabled(False)
+        self.buttonOpen.setEnabled(False)
         self.tableProgram.setEnabled(False)
         self.tableDevices.setEnabled(False)
         # ENABLE STOP BUTTON
@@ -245,6 +247,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.buttonProgramStepInsert.setEnabled(True)
         self.buttonProgramStepEdit.setEnabled(True)
         self.buttonProgramStepRemove.setEnabled(True)
+        self.buttonSave.setEnabled(True)
+        self.buttonOpen.setEnabled(True)
         self.tableProgram.setEnabled(True)
         self.tableDevices.setEnabled(True)
         # DISABLE STOP BUTTON
