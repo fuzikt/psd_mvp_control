@@ -440,11 +440,11 @@ class DialogAddProgramStep(QtWidgets.QDialog, Ui_DialogAddProgramStep):
             if programCommand == "initialize":
                     updateBasicCommandCombo(programCommand)
                     if commandParameters[0] == "right":
-                        self.radioButtonOutputRight.isChecked = True
-                        self.radioButtonOutputLeft.isChecked = False
+                        self.radioButtonOutputRight.setChecked(True)
+                        self.radioButtonOutputLeft.setChecked(False)
                     else:
-                        self.radioButtonOutputRight.isChecked = False
-                        self.radioButtonOutputLeft.isChecked = True
+                        self.radioButtonOutputRight.setChecked(False)
+                        self.radioButtonOutputLeft.setChecked(True)
 
             elif programCommand in ["set_step_position", "move_up_steps", "move_down_steps", "set_return_steps",
                                     "set_backoff_steps"]:
