@@ -211,7 +211,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def queryDeviceForReadiness(self, device):
         if self.debug_communication():
-            self.DialogComWindow.comunicationLogList.addItem(QtWidgets.QListWidgetItem("DEV%s COMMAND: Q" % device + 1))
+            self.DialogComWindow.comunicationLogList.addItem(QtWidgets.QListWidgetItem("DEV%s COMMAND: Q" % (device + 1)))
 
         readiness = self.deviceList[device].get_status()
 
