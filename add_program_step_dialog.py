@@ -30,7 +30,7 @@ class DialogAddProgramStep(QtWidgets.QDialog, Ui_DialogAddProgramStep):
         self.Editing = Editing
         self.ProgramStepToEdit = ProgramStepToEdit
 
-        #EVENTS handling
+        # EVENTS handling
         self.comboBoxDevice.currentTextChanged.connect(self.comboBoxDeviceChanged)
         self.comboBoxBasicCommands.currentTextChanged.connect(self.comboBoxBasicCommandsChanged)
         self.comboBoxComplexCommands.currentTextChanged.connect(self.comboBoxComplexChanged)
@@ -417,7 +417,7 @@ class DialogAddProgramStep(QtWidgets.QDialog, Ui_DialogAddProgramStep):
         self.textEditDescription.clear()
 
         if self.Editing == True:
-            #fill the fields with the parameters from the program step
+            # fill the fields with the parameters from the program step
             self.comboBoxDevice.setCurrentIndex(self.ProgramStepToEdit[0])
 
             programCommand = self.ProgramStepToEdit[1]
@@ -438,19 +438,20 @@ class DialogAddProgramStep(QtWidgets.QDialog, Ui_DialogAddProgramStep):
                 self.comboBoxBasicCommands.setCurrentIndex(-1)
 
             if programCommand == "initialize":
-                    updateBasicCommandCombo(programCommand)
-                    if commandParameters[0] == "right":
-                        self.radioButtonOutputRight.setChecked(True)
-                        self.radioButtonOutputLeft.setChecked(False)
-                    else:
-                        self.radioButtonOutputRight.setChecked(False)
-                        self.radioButtonOutputLeft.setChecked(True)
+                updateBasicCommandCombo(programCommand)
+                if commandParameters[0] == "right":
+                    self.radioButtonOutputRight.setChecked(True)
+                    self.radioButtonOutputLeft.setChecked(False)
+                else:
+                    self.radioButtonOutputRight.setChecked(False)
+                    self.radioButtonOutputLeft.setChecked(True)
 
             elif programCommand in ["set_step_position", "move_up_steps", "move_down_steps", "set_return_steps",
                                     "set_backoff_steps"]:
                 updateBasicCommandCombo(programCommand)
                 self.spinBoxSteps.setValue(commandParameters[0])
-                self.spinBoxVolume.setValue(self.Devicelist[self.ProgramStepToEdit[0]].steps_to_volume(commandParameters[0]))
+                self.spinBoxVolume.setValue(
+                    self.Devicelist[self.ProgramStepToEdit[0]].steps_to_volume(commandParameters[0]))
 
             elif programCommand in ["valve_input", "valve_output"]:
                 updateBasicCommandCombo(programCommand)
@@ -478,7 +479,8 @@ class DialogAddProgramStep(QtWidgets.QDialog, Ui_DialogAddProgramStep):
             elif programCommand == "set_max_velocity":
                 updateBasicCommandCombo(programCommand)
                 self.spinBoxSpeedSteps.setValue(commandParameters[0])
-                self.spinBoxSpeedVolume.setValue(self.Devicelist[self.ProgramStepToEdit[0]].steps_to_volume(commandParameters[0]))
+                self.spinBoxSpeedVolume.setValue(
+                    self.Devicelist[self.ProgramStepToEdit[0]].steps_to_volume(commandParameters[0]))
 
             elif programCommand == "set_syringe_speed":
                 updateBasicCommandCombo(programCommand)
@@ -490,7 +492,8 @@ class DialogAddProgramStep(QtWidgets.QDialog, Ui_DialogAddProgramStep):
                 self.spinBoxStopVelocity.setValue(commandParameters[1])
                 self.spinBoxSpeedSteps.setValue(commandParameters[2])
                 self.spinBoxAcceleration.setValue(commandParameters[3])
-                self.spinBoxSpeedVolume.setValue(self.Devicelist[self.ProgramStepToEdit[0]].steps_to_volume(commandParameters[2]))
+                self.spinBoxSpeedVolume.setValue(
+                    self.Devicelist[self.ProgramStepToEdit[0]].steps_to_volume(commandParameters[2]))
 
             elif programCommand in ["move_syringe_up", "move_syringe_down"]:
                 updateComplexCommandCombo(programCommand)
@@ -500,7 +503,9 @@ class DialogAddProgramStep(QtWidgets.QDialog, Ui_DialogAddProgramStep):
                 self.spinBoxStopVelocity.setValue(commandParameters[3])
                 self.spinBoxSpeedSteps.setValue(commandParameters[4])
                 self.spinBoxAcceleration.setValue(commandParameters[5])
-                self.spinBoxVolume.setValue(self.Devicelist[self.ProgramStepToEdit[0]].steps_to_volume(commandParameters[1]))
-                self.spinBoxSpeedVolume.setValue(self.Devicelist[self.ProgramStepToEdit[0]].steps_to_volume(commandParameters[4]))
+                self.spinBoxVolume.setValue(
+                    self.Devicelist[self.ProgramStepToEdit[0]].steps_to_volume(commandParameters[1]))
+                self.spinBoxSpeedVolume.setValue(
+                    self.Devicelist[self.ProgramStepToEdit[0]].steps_to_volume(commandParameters[4]))
 
         event.accept()
