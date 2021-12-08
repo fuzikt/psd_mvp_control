@@ -92,8 +92,29 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.runTimer = QtCore.QTimer()
         self.runTimer.timeout.connect(self.runTimerTimeOut)
 
+        self.setWindowTitle("PSD / MVP controller - <new_program>")
+        self.programModified = False
+
         self.DialogComWindow = DialogComLog()
         self.debug_communication = self.DialogComWindow.isVisible
+
+    def closeEvent(self, event):
+        # do stuff
+        if not self.programModified:
+            event.accept() # let the window close
+        else:
+            reply = QMessageBox.question(self, 'Warning!',
+                                             "There are unsaved changes in the currently open program? Do you wan to save them?",
+                                             QMessageBox.Yes | QMessageBox.No,
+                                             QMessageBox.No)
+            if reply == QMessageBox.Yes:
+                self.clickButtonSave()
+                if self.programModified:
+                    # cancel was clicked in the save window -> maybe unintentionally - lets return the user back to program
+                    event.ignore()
+            if reply == QMessageBox.No:
+                event.accept() # as you wish, closing...
+
 
     def clickButtonCOMLog(self):
         self.DialogComWindow.show()
@@ -327,6 +348,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if result:
             self.addEditProgramStep(d1, False)
 
+            self.programModified = True
+            if "modified" not in self.windowTitle():
+                self.setWindowTitle("%s %s" % (self.windowTitle(), "- modified"))
+
     def clickButtonEditProgramStep(self):
 
         stepToEdit = self.tableProgram.currentRow()
@@ -342,6 +367,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         result = d1.exec()
         if result:
             self.addEditProgramStep(d1, True)
+
+            self.programModified = True
+            if "modified" not in self.windowTitle():
+                self.setWindowTitle("%s %s" % (self.windowTitle(), "- modified"))
 
     def programTableInsertEditRow(self, programListIndex, Editing=False):
 
@@ -461,6 +490,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.buttonRunSingleCommand.setEnabled(False)
             self.buttonSave.setEnabled(False)
 
+        self.programModified = True
+        if "modified" not in self.windowTitle():
+            self.setWindowTitle("%s %s" % (self.windowTitle(), "- modified"))
+
     def clickButtonSave(self):
         # save file dialog
         options = QtWidgets.QFileDialog.Options()
@@ -487,6 +520,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                     for program_step_param_item in program_step[2]:
                         file_to_save.write(", %s" % program_step_param_item)
                     file_to_save.write("\n")
+            self.setWindowTitle("PSD / MVP controller - <%s>" % fileName)
+            self.programModified = False
         else:
             return
 
@@ -561,6 +596,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 if not line:
                     break
             program_file.close()
+            self.setWindowTitle("PSD / MVP controller - <%s>" % fileName)
+            self.programModified = False
 
     def clickButtonDeviceAdd(self):
         com_ports = serial.tools.list_ports.comports(include_links=False)
@@ -598,6 +635,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                                                 d.comboBoxCOMport.currentText()))
 
             self.deviceTableInsertRow(len(self.deviceList) - 1)
+            self.programModified = True
+            if "modified" not in self.windowTitle():
+                self.setWindowTitle("%s %s" % (self.windowTitle(), "- modified"))
+
 
     def deviceTableInsertRow(self, deviceListIndex):
         rowPosition = self.tableDevices.rowCount()
@@ -644,6 +685,11 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.deviceList.pop(deviceToRemove)
         if len(self.deviceList) < 1:
             self.buttonDeviceRemove.setEnabled(False)
+
+        self.programModified = True
+        if "modified" not in self.windowTitle():
+            self.setWindowTitle("%s %s" % (self.windowTitle(), "- modified"))
+
 
 
 app = QtWidgets.QApplication(sys.argv)
