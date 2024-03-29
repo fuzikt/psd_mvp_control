@@ -623,8 +623,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                         self.deviceList.append(
                             MVPvalve(d.comboBoxDevice.currentText(), d.comboBoxHWaddress.currentText(),
                                      device.com_interface))
-                self.deviceTableInsertRow(len(self.deviceList) - 1)
-                return
+                    self.deviceTableInsertRow(len(self.deviceList) - 1)
+                    return
 
             if "PSD" in d.comboBoxDevice.currentText():
                 self.deviceList.append(PSDpump(d.comboBoxDevice.currentText() + d.comboBoxDeviceType.currentText(),
