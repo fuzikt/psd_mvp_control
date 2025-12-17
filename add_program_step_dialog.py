@@ -476,6 +476,10 @@ class DialogAddProgramStep(QtWidgets.QDialog, Ui_DialogAddProgramStep):
                 updateBasicCommandCombo(programCommand)
                 self.spinBoxSteps.setValue(commandParameters[0])
 
+            elif programCommand == "delay":
+                updateBasicCommandCombo(programCommand)
+                self.spinBoxDelay.setValue(commandParameters[0])
+
             elif programCommand == "set_acceleration":
                 updateBasicCommandCombo(programCommand)
                 self.spinBoxAcceleration.setValue(commandParameters[0])
