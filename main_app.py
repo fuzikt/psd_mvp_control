@@ -24,6 +24,7 @@
 # **************************************************************************
 
 import sys
+import os
 from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtWidgets import QMessageBox
 
@@ -42,6 +43,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, *args, obj=None, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)
         self.setupUi(self)
+
+        self.label.setPixmap(QtGui.QPixmap(self.resource_path("logo_plevkalab.png")))
+        self.setWindowIcon(QtGui.QIcon(self.resource_path("logo_plevkalab.ico")))
 
         # EVENTS
         self.buttonDeviceAdd.clicked.connect(self.clickButtonDeviceAdd)
@@ -97,6 +101,15 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.DialogComWindow = DialogComLog()
         self.debug_communication = self.DialogComWindow.isVisible
+
+    def resource_path(self, relative_path):
+        """ Get absolute path to resource, works for dev and PyInstaller """
+        try:
+            base_path = sys._MEIPASS
+        except AttributeError:
+            base_path = os.path.abspath(".")
+
+        return os.path.join(base_path, relative_path)
 
     def closeEvent(self, event):
         # do stuff
