@@ -1,6 +1,11 @@
 # PSD pump and MVP valve controller 
 Python application to control Hamilton PSD/4, PSD/6 pumps and MVP/4 valves.
 
+# Cite as:
+If you like the application, please cite:
+
+Šmerdová L, Füzik T, Valentová L, Bárdy P, Procházková M, Pařenicová M, Plevka P. Dynamics of bacterial biofilm development imaged using light sheet fluorescence microscopy. Biochemistry and Biophysics Reports. 2025 Sept;43:102127. doi: https://doi.org/10.1016/j.bbrep.2025.102127
+
 ## Features
 - easy to  integrate independent hardware classes for PSD pump and MVP valve (see control_demo.py for details of integration)
 - multiple addressable devices per COM port
