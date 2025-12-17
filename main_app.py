@@ -303,6 +303,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         elif programCommand in ["insert_loop_start"]:
             commandParameters.append(addEditDialog.spinBoxSteps.value())
 
+        elif programCommand == "delay":
+            commandParameters.append(addEditDialog.spinBoxDelay.value())
+
         elif programCommand == "set_acceleration":
             commandParameters.append(addEditDialog.spinBoxAcceleration.value())
 
@@ -398,6 +401,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         elif programCommand in ["insert_loop_start"]:
             tableCommandParameters.append("Repeat: %s x" % self.programSteps[programListIndex][2][0])
+
+        elif programCommand == "delay":
+            tableCommandParameters.append("Delay [ms]: %s" % self.programSteps[programListIndex][2][0])
 
         elif programCommand == "set_acceleration":
             tableCommandParameters.append("Acceleration: %s" % self.programSteps[programListIndex][2][0])
