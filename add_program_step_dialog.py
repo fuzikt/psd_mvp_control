@@ -136,11 +136,23 @@ class DialogAddProgramStep(QtWidgets.QDialog, Ui_DialogAddProgramStep):
             self.labelValvePort.setEnabled(False)
             self.spinBoxValvePort.setEnabled(False)
         elif value in ["set_step_position", "move_up_steps", "move_down_steps", "set_return_steps", "set_backoff_steps",
-                       "insert_loop_start"]:
+                       "insert_loop_start", "delay"]:
             self.groupBoxValve.setDisabled(True)
             self.groupBoxPumpSpeed.setDisabled(True)
             self.groupBoxSetSteps.setEnabled(True)
             self.spinBoxVolume.setEnabled(True)
+
+            if value == "delay":
+                self.spinBoxSteps.setDisabled(True)
+                self.spinBoxVolume.setDisabled(True)
+                self.spinBoxDelay.setEnabled(True)
+                self.spinBoxDelay.setMinimum(self.Devicelist[currentIndex].delay_min)
+                self.spinBoxDelay.setMaximum(self.Devicelist[currentIndex].delay_max)
+                self.spinBoxDelay.setToolTip(str(self.spinBoxDelay.minimum()) + "-" + str(self.spinBoxDelay.maximum()))
+            else:
+                self.spinBoxSteps.setEnabled(True)
+                self.spinBoxVolume.setEnabled(True)
+                self.spinBoxDelay.setDisabled(True)
 
             if value in ["set_step_position", "move_up_steps", "move_down_steps"]:
                 self.spinBoxSteps.setMinimum(self.Devicelist[currentIndex].steps_min)
