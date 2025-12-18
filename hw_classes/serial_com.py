@@ -57,7 +57,7 @@ class Serial_communication:
             if status_byte & 0b0100000:
                 status_ready = True
             error_code = int(status_byte & 0b1111)
-            data = response[4:response.index(b'\x03')]
+            data = response[3:response.index(b'\x03')]
             return address, status_ready, error_code, data
         return 0, 0, 0, 0
 
